@@ -4,7 +4,7 @@
 Remix palettes, swap type systems, bend the layout, and copy the exact prompt
 your favorite AI coding tool needs (vibe brief, raw spec, or AGENTS.md).
 
-Already-hosted version: **[https://motif.app](https://example.com)** 
+Already-hosted version: **[Motif Design](https://motif-design-one.vercel.app)** 
 
 ---
 
