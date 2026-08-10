@@ -3,18 +3,22 @@ import SWRegister from "@/components/SWRegister";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Motif — The Free Design-Prompt Atlas",
-  description:
-    "360+ premium design DNA briefs for websites, UIs & games. Copy as vibe-coder brief, raw spec, or agent-ready AGENTS.md. Free forever.",
-  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "Motif — The Free Design Atlas",
     description: "Every design as living DNA. Copy-ready prompts for vibe coders, engineers & agents.",
+    url: "https://motif-design-one.vercel.app",
     siteName: "Motif",
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Motif — design DNA atlas" }],
     locale: "en_US",
     type: "website",
   },
-  twitter: { card: "summary", title: "Motif — The Free Design Atlas", description: "Live premium design DNA, free forever." },
+  twitter: {
+    card: "summary_large_image",
+    title: "Motif — The Free Design Atlas",
+    description: "Every design as living DNA.",
+    images: ["/og.jpg"],
+  },
+  
 };
 
 export const viewport: Viewport = {
