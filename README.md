@@ -4,7 +4,7 @@
 Remix palettes, swap type systems, bend the layout, and copy the exact prompt
 your favorite AI coding tool needs (vibe brief, raw spec, or AGENTS.md).
 
-Already-hosted version: **[https://motif.app](https://example.com)** (placeholder — point whenever you deploy)
+Already-hosted version: **[https://motif.app](https://example.com)** 
 
 ---
 
@@ -36,7 +36,7 @@ preview**, remixable in real-time, and compilable into a paste-ready prompt.
 - [Contribute](#contribute)
 - [Self-hosting](#self-hosting)
 - [Security](#security)
-- [Roadmap](#roadmap)
+
 
 ---
 
@@ -111,13 +111,10 @@ Premium Design site/
 │   ├── sound.ts            — WebAudio SFX (copy, receive, install, etc.)
 │   └── client-data.ts      — typed wrapper for /api/data
 ├── public/
-│   ├── logo.png            — your app icon (add once → all PWA plumbing works)
-│   ├── sw.js               — offline-first service worker (defense-grade)
-│   └── manifest.webmanifest
-└── docs/                   — open-source notes
-    ├── ADMIN.md
-    ├── OG_IMAGE.md
-    └── SCALE.md
+     ├── logo.png            — your app icon (add once → all PWA plumbing works)
+     ├── sw.js               — offline-first service worker (defense-grade)
+     └── manifest.webmanifest
+
 ```
 
 ---
@@ -227,15 +224,6 @@ This repo is audited for common LLM-shot puzzles:
 
 You can tighten further by swapping `lib/security/limiter.ts` from in-memory
 → Upstash (cache.last 5 minutes).
-
----
-
-## Roadmap
-
-- `docs/OG_IMAGE.md` — pre-generated share card
-- `docs/SCALE.md` — what to build next
-- Dynamic per-design og route (`/api/og`) — optional next
-- A Discord-first snapshot broadcaster (if community forms)
 
 ---
 
