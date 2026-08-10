@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+:root {
+  color-scheme: dark;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body {
+  @apply bg-[#08080c] text-zinc-100 font-sans antialiased selection:bg-violet-500/40;
+  overflow-x: hidden;
+}
+
+.font-display { font-family: var(--font-display); }
+
+/* ambient page background */
+.ambient {
+  background:
+    radial-gradient(90% 60% at 50% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
+    radial-gradient(50% 40% at 90% 30%, rgba(34, 211, 238, 0.08), transparent 60%),
+    radial-gradient(60% 50% at 10% 90%, rgba(236, 72, 153, 0.07), transparent 65%),
+    #08080c;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.glass-deep {
+  background: rgba(10, 10, 16, 0.82);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- reveal choreography ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px) scale(0.99);
+  animation: riseIn 0.9s var(--ease-out-expo) forwards;
+}
+@keyframes riseIn {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* hero word swap */
+.word-swap {
+  display: inline-block;
+  animation: wordIn 0.7s var(--ease-out-expo);
+}
+@keyframes wordIn {
+  from { opacity: 0; transform: translateY(60%) rotateX(40deg); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+/* gradient sweep (iconic line) */
+.gradient-text {
+  background: linear-gradient(100deg, #c4b5fd 0%, #e879f9 25%, #67e8f9 55%, #c4b5fd 85%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientPan 7s ease-in-out infinite alternate;
+}
+@keyframes gradientPan {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+/* marquee */
+.marquee-track {
+  display: inline-flex;
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* floaty hero preview */
+.floaty { animation: floaty 7s ease-in-out infinite; }
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) rotate(-0.4deg); }
+  50% { transform: translateY(-12px) rotate(0.4deg); }
+}
+
+/* shimmer pulse on skeleton/loading */
+.pulse-soft { animation: pulseSoft 1.6s ease-in-out infinite; }
+@keyframes pulseSoft {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+/* typewriter caret */
+.caret::after {
+  content: "▍";
+  animation: blink 1s steps(1) infinite;
+  color: #a78bfa;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* director "thinking" dots */
+.think-dots span {
+  display: inline-block;
+  animation: thinkDot 1.2s ease-in-out infinite;
+}
+.think-dots span:nth-child(2) { animation-delay: 0.15s; }
+.think-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes thinkDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* card hover */
+.card-glow {
+  transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s ease, border-color 0.5s ease;
+}
+.card-glow:hover {
+  transform: translateY(-5px);
+  border-color: rgba(167, 139, 250, 0.4);
+  box-shadow: 0 18px 50px -14px rgba(139, 92, 246, 0.35);
+}
+
+/* scrollbars */
+.slim-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+.slim-scroll::-webkit-scrollbar-thumb { background: rgba(167, 139, 250, 0.25); border-radius: 4px; }
+.slim-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* chat message entrance */
+.msg-in { animation: msgIn 0.45s var(--ease-spring); }
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* modal entrance */
+.modal-in { animation: modalIn 0.5s var(--ease-out-expo); }
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.backdrop-in { animation: backdropIn 0.4s ease; }
+@keyframes backdropIn { from { opacity: 0; } }
+
+/* drawer slide */
+.drawer-in { animation: drawerIn 0.5s var(--ease-out-expo); }
+@keyframes drawerIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.pv-bar { border-radius: 3px; }
+
+/* stacked preview deck behind hero card */
+.deck-shadow-1 { transform: rotate(-3deg) scale(0.96); top: 4%; left: -4%; }
+.deck-shadow-2 { transform: rotate(2.5deg) scale(0.93); top: 7%; right: -5%; left: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .caret::after, .reveal, .word-swap, .gradient-text, .floaty,
+  .think-dots span, .msg-in, .modal-in, .drawer-in, .pulse-soft, .fade-up {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
