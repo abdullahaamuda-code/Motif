@@ -4,7 +4,7 @@
 
 Motif is a live, remixable design catalog where every design renders directly in the browser — not as screenshots. Remix palettes, swap type systems, adjust layouts, and copy the exact prompts your favorite AI coding tools need.
 
-**Live:** [motif-design.vercel.app](https://motif-design.vercel.app) · **Repo:** [github.com/abdullahaamuda-code/Motif](https://github.com/abdullahaamuda-code/Motif)
+**Live:** [motif-design-one.vercel.app](https://motif-design-one.vercel.app) · **Repo:** [github.com/abdullahaamuda-code/Motif](https://github.com/abdullahaamuda-code/Motif)
 
 ---
 
