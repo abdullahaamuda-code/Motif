@@ -7,7 +7,7 @@ function CopyBtn({ text }: { text: string }) {
   const [ok, setOk] = useState(false);
   return (
     <button onClick={async () => { await navigator.clipboard.writeText(text); sfx.copy(); setOk(true); setTimeout(() => setOk(false), 1400); }}
-      className="absolute top-2 right-2 flex items-center gap-1 rounded bg-white/10 hover:bg-white/20 text-zinc-300 px-2 py-0.5 text-[9px] font-medium transition">
+      className="absolute top-2 right-2 flex items-center gap-1 rounded bg-ink-4 hover:bg-ink-3 text-paper-dim px-2 py-0.5 text-[9px] font-medium transition">
       {ok ? "✓ copied" : "copy"}
     </button>
   );
@@ -26,8 +26,8 @@ export default function RichText({ text }: { text: string }) {
           const code = lines.slice(1).join("\n");
           return (
             <div key={i} className="relative">
-              <pre className="rounded-lg bg-black/60 border border-white/10 px-3 py-2 text-[11px] leading-relaxed overflow-x-auto slim-scroll font-mono text-violet-200">
-                {lang && <div className="text-[9px] uppercase tracking-widest text-zinc-500 mb-1">{lang}</div>}
+              <pre className="rounded-lg bg-ink border border-hairline px-3 py-2 text-[11px] leading-relaxed overflow-x-auto slim-scroll font-mono text-paper">
+                {lang && <div className="text-[9px] uppercase tracking-widest text-paper-faint mb-1">{lang}</div>}
                 {code}
               </pre>
               <CopyBtn text={code} />
@@ -39,12 +39,12 @@ export default function RichText({ text }: { text: string }) {
             {block.split("\n").map((line, j) => {
               if (!line.trim()) return <div key={j} className="h-1" />;
               let cls = "text-[13px] leading-relaxed";
-              if (line.startsWith("## ")) { line = line.slice(3); cls = "font-display font-bold text-[15px] text-white"; }
-              else if (line.startsWith("# ")) { line = line.slice(2); cls = "font-display font-bold text-[16px] text-white"; }
+              if (line.startsWith("## ")) { line = line.slice(3); cls = "font-display font-bold text-[15px] text-paper"; }
+              else if (line.startsWith("# ")) { line = line.slice(2); cls = "font-display font-bold text-[16px] text-paper"; }
               else if (/^[-•] /.test(line)) { line = "• " + line.slice(2); cls += " pl-1"; }
               const parts = line.split(/(\*\*[^*]+\*\*)/g).map((p, k) =>
                 p.startsWith("**") && p.endsWith("**")
-                  ? <strong key={k} className="text-white font-semibold">{p.slice(2, -2)}</strong>
+                  ? <strong key={k} className="text-paper font-semibold">{p.slice(2, -2)}</strong>
                   : p
               );
               return <div key={j} className={cls}>{parts}</div>;

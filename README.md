@@ -1,145 +1,225 @@
-# 🎨 Motif — The Design Atlas
+# Motif — The Design Atlas
 
-**A free, premium design-prompt atlas.**
+**The Press Proof Floor.** Every entry in this atlas is *rendered* — not screenshotted.
+Remix palettes, swap type systems, bend the layout, and copy the exact prompt your
+favorite AI coding tool needs (vibe brief, raw spec, or AGENTS.md).
 
-Motif is a live, remixable design catalog where every design renders directly in the browser — not as screenshots. Remix palettes, swap type systems, adjust layouts, and copy the exact prompts your favorite AI coding tools need.
-
-**Live:** [motif-design-one.vercel.app](https://motif-design-one.vercel.app) · **Repo:** [github.com/abdullahaamuda-code/Motif](https://github.com/abdullahaamuda-code/Motif)
-
----
-
-## Why Motif
-
-Most design-inspiration libraries show you what something looks like. Motif gives you the design DNA behind it — palette, typography, layout, effects, and implementation direction — so you can remix it, understand it, and turn it into something new.
-
-**Browse. Remix. Understand. Build.**
+**Live:** [https://motif-design-one.vercel.app](https://motif-design-one.vercel.app)
 
 ---
 
-## Features
+## 🚀 The Idea
 
-- **Live previews** — every design renders as pure CSS, not a static screenshot
-- **Remixable DNA** — customize palettes, type systems, layouts, and effects in real time
-- **AI Design Director** — streaming chat with full catalog context that asks clarifying questions and generates implementation-ready prompts
-- **Copy-ready prompts** — Vibe Brief, Raw Specification, or `AGENTS.md`, ready for Cursor, v0, Lovable, Claude, and other AI coding tools
-- **No signup, no paywall** — everything free and copyable
-- **Offline-first** — service worker keeps the catalog available and resilient
-- **MIT licensed** — fork, modify, self-host, add your own designs
+There are thousands of premium design pages on the internet. Almost all of them
+show you a PNG, sell you a download, and leave you alone when you sit down to build.
 
-## Tech Stack
+Motif is the opposite. Every design is a **Design DNA** — palette + type pairer +
+layout choreography + craft effects + voice — rendered as a **live proof sheet** on a
+dark inspection table, remixable in real time, and compilable into a paste-ready prompt.
 
-| | |
-|---|---|
-| Language | TypeScript |
-| Framework | Next.js (App Router) |
-| Styling | Tailwind CSS |
-| AI | Cerebras / Groq (rotational) |
-| Deployment | Static-ready — Vercel, Cloudflare, or Netlify |
+- **Hundreds of curated designs** across Landing / App UI / Games
+- **No signup, no paywall.** Copy anything raw.
+- **AI Design Director (optional)** that backs you with full-catalog context,
+  answers clarifying questions, and emits master prompts you paste into Cursor /
+  v0 / Lovable / Claude / anything.
+- **MIT licensed** — fork, modify, self-host, and add designs by appending one
+  object. No DB. Static. Boring on purpose = reliable.
 
-## Status
+## 🎨 The design system
 
-| Area | Status |
-|---|---|
-| Design catalog | ✅ 82+ curated designs |
-| Live previews | ✅ Functional |
-| AI Director | ✅ Streaming chat |
-| Prompt compilation | ✅ Functional |
-| Remix controls | ✅ Functional |
-| Offline support | ✅ Service worker |
-| User accounts | ❌ None — intentionally local-only |
+The chrome is a printer's press room: warm ink-black ground, paper-cream text,
+hairline rules, and a single proofing-red accent. Registration marks and crop
+corners are the icon language; job-ticket mono (Fragment Mono) is used only for
+real spec data. Display is Bodoni Moda, UI is Archivo. The catalog's own palettes
+are the only source of color on the table.
+
+- Tokens & motion grammar: `app/globals.css`
+- Recorded system: `DESIGN.md` · product truth: `PRODUCT.md`
+- Brand mark: proof-red registration mark on ink (`public/icon.svg`)
+- Social card: `public/og.jpg` (1200×630)
+
+## TOC
+
+- [Quick start](#quick-start)
+- [Directory](#directory)
+- [Catalog anatomy](#catalog-anatomy)
+- [AI Director](#ai-director)
+- [Contribute](#contribute)
+- [Self-hosting](#self-hosting)
+- [Security](#security)
+- [License](#license)
 
 ---
 
-## Local Setup
-
-**1. Clone the repository**
-
-```bash
-git clone https://github.com/abdullahaamuda-code/Motif.git
-cd Motif
-```
-
-**2. Install dependencies**
+## Quick start
 
 ```bash
 npm install
+npm run dev
+# open http://localhost:3000
 ```
 
-**3. (Optional) Configure the AI Director**
+### To make the Director work
+Create a `.env.local` in the repo root:
 
-Only needed to enable AI features. Create a `.env.local` in the project root:
+```bash
+# add as many as you have — rotation happens automatically
+CEREBRAS_API_KEY_1=your-cerebras
+CEREBRAS_API_KEY_2=
+GROQ_API_KEY_1=your-groq
 
-```env
-CEREBRAS_API_KEY_1=your-key
-GROQ_API_KEY_1=your-key
-APP_SECRET=any-random-string
+APP_SECRET=any-long-random-string
 CHAT_DAILY_LIMIT=50
 ```
 
-Add further provider keys if your setup supports key rotation.
-
-**4. Start the dev server**
-
-```bash
-npm run dev
-```
-
-Then open [http://localhost:3000](http://localhost:3000).
-
-## Project Structure
-
-```
-Motif/
-├── app/                    # Next.js App Router, pages, and API routes
-├── components/             # UI components (Atlas, Director, Preview)
-├── lib/
-│   ├── data/                # Design catalog, palettes, typography
-│   ├── ai/                  # AI provider rotation and catalog indexing
-│   ├── render/               # Prompt composition and rendering logic
-│   └── security/             # Rate limiting and token management
-├── public/                 # Static assets and service worker
-├── specs/                  # Design and implementation specifications
-└── package.json
-```
-
-## AI Design Director
-
-A conversational interface with access to the full Motif catalog. It can:
-
-- Understand a user's design requirements
-- Ask clarifying questions when needed
-- Recommend relevant design directions
-- Combine characteristics from different catalog entries
-- Generate implementation-ready master prompts in a format suited to the target AI coding tool
-
-Provider (Cerebras / Groq) is selected by rotation based on the configured environment.
-
-## Prompt Compilation
-
-Any selected design direction can be compiled into:
-
-- **Vibe Brief** — a concise creative direction describing the intended visual identity
-- **Raw Specification** — a structured breakdown of layout, typography, color, and interaction requirements
-- **AGENTS.md** — structured context and implementation guidance for AI coding agents
-
-Paste directly into Cursor, v0, Lovable, Claude, or any other AI coding assistant.
-
-## Local-First Architecture
-
-Motif intentionally has no user accounts. Preferences, remix settings, and local configuration are stored via `localStorage`, so the catalog is fully usable without signing up.
-
-## Security & Rate Limiting
-
-The AI Director includes server-side protections for API usage. Provider keys stay server-side and are never exposed to the client.
-
-## Contributing
-
-Contributions are welcome — new designs, improved previews, new palettes or typography systems, remix-control improvements, AI Director enhancements, bug fixes, or docs. Please make sure `npm run build` succeeds before submitting a PR.
-
-## License
-
-MIT — see [LICENSE](LICENSE) for the full text.
+That's it. The Director now has 50 free chats/day/user (configurable),
+streams tokens, remembers threads locally, and compiles prompts with the
+full catalog exposed as context.
 
 ---
 
-Built with ❤️ by Abdullah A-Amuda
+## Directory
+
+```
+Motif/
+├── app/
+│   ├── layout.tsx          — fonts, metadata, OG, favicon, PWA, direction contract
+│   ├── page.tsx            — landing (Nav + Hero + Process + Proof Wall + Footer)
+│   ├── globals.css         — design tokens + the full motion grammar
+│   ├── atlas/page.tsx      — the press room (filter bar, proof wall, ?open= deep links)
+│   └── api/
+│       ├── chat/route.ts   — streaming chat w/ provider rotation
+│       ├── token/route.ts  — HMAC-signed quota token
+│       └── data/route.ts   — the catalog payload (slim, static, fast)
+├── components/
+│   ├── Nav.tsx             — press-room top bar (mark, links, Director, sound)
+│   ├── Hero.tsx            — masked line-rise headline, tilting live proof deck,
+│   │                          job-ticket spec strip, craft marquee
+│   ├── ProofStrip.tsx      — the 3-step process band
+│   ├── CraftSection.tsx    — the Proof Wall (featured designs, caption strips)
+│   ├── AtlasRoom.tsx       — filter/search/mood logic + proof card grid
+│   ├── LivePreview.tsx     — pure-CSS renderer for a DesignDNA (no images, ever)
+│   ├── DesignModal.tsx     — proof approval sheet: remix + prompt compiler + copy
+│   ├── Director.tsx        — chat UI, threads, question wizard, streaming
+│   ├── Icon.tsx            — drawn stroke icon set + RegMark + MotifMark
+│   ├── Footer.tsx          — colophon
+│   └── Reveal.tsx, RichText.tsx, ShareNudge.tsx, SWRegister.tsx
+├── lib/
+│   ├── data/               — palette/type/effects/designs (source of truth)
+│   │   ├── custom.ts       — ➕ add entries by appending one object
+│   │   ├── designs*.ts     — hand-curated roster
+│   │   ├── mini.ts         — programmatic variants (recipe × rotation)
+│   │   ├── palettes.ts, typesystems.ts, craft.ts
+│   ├── ai/                 — key rotation, provider wrapper, TF-IDF indexer
+│   ├── render/             — master prompt composition (server + client)
+│   ├── security/limiter.ts — HMAC + fixed-window limiter
+│   ├── sse.ts, sound.ts, client-data.ts, director-memory.ts
+├── public/
+│   ├── icon.svg            — the mark: proof-red registration mark on ink
+│   ├── logo.png            — 512px PWA icon · apple-touch-icon.png 180px
+│   ├── og.jpg              — social share card
+│   └── sw.js, manifest.webmanifest
+├── DESIGN.md               — the recorded design system (from the build)
+└── PRODUCT.md              — durable product context
+```
+
+---
+
+## Catalog anatomy
+
+Each design entry conforms to this typed contract (see `lib/data/types.ts`):
+
+```ts
+interface DesignDNA {
+  slug: string;                // kebab-case, unique
+  name: string;
+  vibe: string;               // one-line identity
+  rubric: "W" | "U" | "G";     // Web / UI / Game
+  industries: string[];        // ids from craft.ts
+  styles: string[];
+  palettes: string[];          // palette ids (see palettes.ts)
+  typePair: string;            // type-system id
+  effects: string[];           // craft effect ids
+  layout: {
+    hero: HeroKind;            // statement, split, arena, bento, editorial…
+    flow: string[];            // ordered sections (bento-grid, pricing, faq…)
+    shell: ShellKind;          // topnav, sidebar, console, canvasdock…
+    density: "airy" | "balanced" | "dense";
+  };
+  preview: { mock: MockKind; stat: string };
+  voice: string;
+  tags: string[];
+  featured?: boolean;
+  mini?: boolean;
+}
+```
+
+**To add a design:** open `lib/data/custom.ts` and append one block. Commit.
+That's it — your catalog just grew. The static renderer picks it up.
+
+**Programmatic variants:** `mini.ts` rotates a set of core recipes against
+the palette axes and density buckets, producing deterministic unique spin-offs.
+
+---
+
+## The AI Director
+
+`components/Director.tsx` is a complete chat client:
+
+- **Multi-thread persistence** — sessions in localStorage, clear per thread.
+- **The Question wizard** — when a reply ends with a `QUESTIONS:` block, the UI
+  parses it into a compact bar with pills + free text, then auto-sends the
+  composed answer.
+- **Copy buttons** — every reply's prompt code block is one click away.
+- **Maximize** — floating sheet ↔ full-viewport immersive space.
+- **True streaming** — status (`crafting… → writing…`) is honest; no fake pauses.
+
+Server route `POST /api/chat` — sanitizes injections, caps history,
+caps the message count, reads provider rotation, and returns raw SSE.
+
+---
+
+## Contribute
+
+PRs welcome! If you want your entry displayed:
+
+1. Fork.
+2. Add a best-effort DesignDNA record to `lib/data/custom.ts`.
+3. Make sure `slug` is unique (kebab-case) and compilation passes
+   (`npm run build`).
+4. PR template:
+   - Why the design is *premium* — what makes it have taste
+   - Screenshots (if applicable)
+   - Markdown spec added → we review names + vibe.
+
+---
+
+## Self-hosting
+
+Deploy: any static host (Cloudflare Pages, Vercel, Netlify, one Node box via
+`next start`).
+
+The `public/sw.js` service worker gives offline hardening for the catalog.
+It's *not* required for the Director (that's stream-based), but it's cheap.
+
+Memory + accounts: none. We intentionally ship the app with **zero account
+system** — everything (chat history, preferences) is localStorage.
+
+---
+
+## Security
+
+- Content-Security-Policy: `default-src 'self'` + explicit allow-list only.
+- API keys are **never** shipped to the client — only the sanitized quota token.
+- `app/api/chat` filters messages, caps history, caps sizes, rotates keys.
+- Prompt-injection sanitizer at the boundary.
+
+---
+
+## License
+
+**MIT** — do what you want; credit keeps the karma warm. See [`LICENSE`](./LICENSE).
+
+---
+
+Motif — free forever. Proofed live, never screenshotted.

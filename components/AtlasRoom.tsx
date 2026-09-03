@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { DesignDNA, PaletteDef, TypeSystem, Rubric } from "@/lib/data/types";
 import LivePreview from "./LivePreview";
 import DesignModal from "./DesignModal";
 import Director from "./Director";
 import { sfx } from "@/lib/sound";
-import { Icon } from "./Icon";
+import { Icon, RegMark } from "./Icon";
+import { paletteById } from "@/lib/data/palettes";
 
 const TABS: Array<{ id: Rubric | ""; label: string }> = [
   { id: "", label: "All" },
@@ -68,85 +69,113 @@ export default function AtlasRoom({
   // ALWAYS feature the best first — never shuffled
   const ordered = useMemo(() => [...filtered].sort((a, b) => Number(b.featured ?? false) - Number(a.featured ?? false)), [filtered]);
 
+  // deep link: /atlas?open=slug opens that proof directly
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("open");
+    if (slug) {
+      const d = designs.find((x) => x.slug === slug);
+      if (d) setSelected(d);
+    }
+  }, [designs]);
+
   return (
     <div>
-      {/* sticky filter bar */}
-      <div className="sticky top-14 z-30 -mx-4 px-4 py-3 bg-[#08080c]/85 backdrop-blur-2xl border-b border-white/5">
+      {/* sticky job-ticket bar */}
+      <div className="sticky top-14 z-30 -mx-4 px-4 py-3 bg-ink/90 backdrop-blur-2xl hairline-b">
         <div className="flex flex-col md:flex-row gap-2 md:items-center">
-          <div className="flex gap-1 rounded-full bg-white/5 p-1">
+          <div className="flex gap-1 rounded-full border border-hairline bg-ink-2 p-1">
             {TABS.map((t) => (
               <button
                 key={t.id}
                 onClick={() => { setRubric(t.id); sfx.chip(); }}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition ${rubric === t.id ? "bg-white text-zinc-950" : "text-zinc-400 hover:text-white"}`}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition btn-press ${rubric === t.id ? "bg-paper text-ink" : "text-paper-dim hover:text-paper"}`}
               >
                 {t.label}
               </button>
             ))}
           </div>
           <div className="relative flex-1">
-            <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+            <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-paper-faint" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search by vibe, style, industry…"
-              className="w-full rounded-full bg-white/5 border border-white/10 pl-9 pr-4 py-2 text-xs placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-violet-400/60"
+              className="w-full rounded-full bg-ink-2 border border-hairline pl-9 pr-4 py-2 text-xs text-paper placeholder:text-paper-faint focus:outline-none focus:border-proof/60 transition-colors"
             />
           </div>
           <div className="flex gap-2">
             <select value={style} onChange={(e) => setStyle(e.target.value)}
-              className="rounded-full bg-white/5 border border-white/10 px-3 py-2 text-xs text-zinc-300 focus:outline-none [&>option]:bg-zinc-900">
+              className="rounded-full bg-ink-2 border border-hairline px-3 py-2 text-xs text-paper-dim focus:outline-none focus:border-proof/60 transition-colors [&>option]:bg-ink-3">
               <option value="">Style: all</option>
               {styles.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
             <select value={mood} onChange={(e) => setMood(e.target.value)}
-              className="rounded-full bg-white/5 border border-white/10 px-3 py-2 text-xs text-zinc-300 focus:outline-none [&>option]:bg-zinc-900">
+              className="rounded-full bg-ink-2 border border-hairline px-3 py-2 text-xs text-paper-dim focus:outline-none focus:border-proof/60 transition-colors [&>option]:bg-ink-3">
               {moods.map((m) => <option key={m} value={m}>{m === "all" ? "Mood: all" : m}</option>)}
             </select>
           </div>
         </div>
       </div>
 
-      {/* grid */}
+      {/* the proof wall */}
       <div className="pt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {ordered.slice(0, visible).map((d, i) => (
-          <article
-            key={d.slug}
-            className="reveal card-glow glass rounded-2xl overflow-hidden cursor-pointer group"
-            style={{ animationDelay: `${(i % 6) * 70}ms` }}
-            onClick={() => { sfx.open(); setSelected(d); }}
-          >
-            <div className="relative overflow-hidden">
-              <div style={{ aspectRatio: "16/10" }} className="relative">
-                <LivePreview design={d} className="absolute inset-0" />
+        {ordered.slice(0, visible).map((d, i) => {
+          const pal = paletteById(d.palettes[0]);
+          return (
+            <div key={d.slug} className="blur-in h-full" style={{ animationDelay: `${(i % 9) * 55}ms` }}>
+            <article
+              className="card-lift sheet rounded-xl overflow-hidden cursor-pointer group crop-corners h-full"
+              onClick={() => { sfx.open(); setSelected(d); }}
+              onKeyDown={(e) => { if (e.key === "Enter") { sfx.open(); setSelected(d); } }}
+              tabIndex={0}
+              role="button"
+              aria-label={`Open proof: ${d.name}`}
+            >
+              <div className="relative overflow-hidden">
+                <div style={{ aspectRatio: "16/10" }} className="relative">
+                  <LivePreview design={d} className="absolute inset-0" />
+                </div>
+                {d.featured && (
+                  <span className="absolute top-2.5 left-2.5 z-10 flex items-center gap-1 rounded-full bg-ink/80 backdrop-blur px-2 py-0.5 text-[8.5px] font-mono uppercase tracking-[0.14em] text-proof border border-proof/30">
+                    <RegMark size={7} /> proofed
+                  </span>
+                )}
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
-              {d.featured && (
-                <span className="absolute top-2 left-2 rounded-full bg-white text-zinc-950 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 shadow-lg">Featured</span>
-              )}
+              <div className="p-4">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display font-semibold text-[15px]">{d.name}</h3>
+                  <span className="flex -space-x-1" title={pal.name}>
+                    {pal.swatch.map((c) => <span key={c} className="w-2.5 h-2.5 rounded-full border border-ink-3" style={{ background: c }} />)}
+                  </span>
+                </div>
+                <p className="mt-1 text-[12px] text-paper-dim line-clamp-2">{d.vibe}</p>
+                <div className="mt-3 flex items-center gap-1.5 flex-wrap">
+                  {d.styles.slice(0, 2).map((s) => (
+                    <span key={s} className="text-[9px] font-mono uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-ink-3 text-paper-faint">{s}</span>
+                  ))}
+                  <span className="text-[9px] font-mono uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-ink-3 text-paper-faint">{d.layout.density}</span>
+                  <span className="ml-auto text-[9px] font-mono uppercase tracking-[0.14em] text-paper-faint group-hover:text-proof transition-colors">{d.rubric === "W" ? "web" : d.rubric === "U" ? "app" : "game"}</span>
+                </div>
+              </div>
+            </article>
             </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="font-display font-bold text-sm">{d.name}</h3>
-                <span className="text-[9px] uppercase tracking-widest text-zinc-500">{d.rubric}</span>
-              </div>
-              <p className="mt-1 text-[11px] text-zinc-400 line-clamp-2">{d.vibe}</p>
-              <div className="mt-3 flex gap-1.5 flex-wrap">
-                {d.styles.slice(0, 2).map((s) => (
-                  <span key={s} className="text-[9px] uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-white/5 text-zinc-400">{s}</span>
-                ))}
-                <span className="text-[9px] uppercase tracking-wide px-1.5 py-0.5 rounded-full bg-white/5 text-zinc-400">{d.layout.density}</span>
-              </div>
-            </div>
-          </article>
-        ))}
+          );
+        })}
       </div>
 
+      {ordered.length === 0 && (
+        <div className="py-24 text-center">
+          <div className="mx-auto text-paper-faint"><RegMark size={22} /></div>
+          <p className="mt-4 font-display text-xl">Nothing on the table for that search.</p>
+          <p className="mt-1 text-[13px] text-paper-dim">Try a broader vibe — or ask the Director to pull something custom.</p>
+        </div>
+      )}
+
       {visible < ordered.length && (
-        <div className="mt-10 text-center">
-          <button onClick={() => setVisible((v) => v + 30)}
-            className="rounded-full bg-white text-zinc-950 px-8 py-3 text-sm font-semibold transition hover:scale-105">
-            Load more
+        <div className="mt-12 text-center">
+          <button onClick={() => { setVisible((v) => v + 30); sfx.chip(); }}
+            className="rounded-full border border-hairline bg-ink-2 px-8 py-3 text-sm font-semibold text-paper hover:border-proof/60 hover:text-proof transition btn-press">
+            Pull {Math.min(30, ordered.length - visible)} more proofs
           </button>
         </div>
       )}

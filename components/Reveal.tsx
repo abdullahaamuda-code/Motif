@@ -17,6 +17,7 @@ export default function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (!("IntersectionObserver" in window)) { setVisible(true); return; }
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
@@ -24,7 +25,7 @@ export default function Reveal({
           io.disconnect();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
     return () => io.disconnect();
@@ -33,7 +34,7 @@ export default function Reveal({
   return (
     <div
       ref={ref}
-      className={`fade-up ${visible ? "visible" : ""} ${className}`}
+      className={`reveal-soft ${visible ? "visible" : ""} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
