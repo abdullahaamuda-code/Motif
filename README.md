@@ -60,21 +60,37 @@ npm run dev
 ```
 
 ### To make the Director work
-Create a `.env.local` in the repo root:
+Create a `.env.local` in the repo root (and set the same variables in your host's
+environment settings — on Vercel: Project → Settings → Environment Variables):
 
 ```bash
 # add as many as you have — rotation happens automatically
-CEREBRAS_API_KEY_1=your-cerebras
-CEREBRAS_API_KEY_2=
-GROQ_API_KEY_1=your-groq
+GROQ_API_KEY_1=gsk_...
+GROQ_API_KEY_2=
+CEREBRAS_API_KEY_1=csk-...
 
 APP_SECRET=any-long-random-string
 CHAT_DAILY_LIMIT=50
 ```
 
-That's it. The Director now has 50 free chats/day/user (configurable),
-streams tokens, remembers threads locally, and compiles prompts with the
-full catalog exposed as context.
+Then verify the keys and model ids actually work before you trust the UI:
+
+```bash
+npm run models:check
+```
+
+It lists each provider's live models, flags any id in `lib/ai/providers.ts` that
+no longer exists, and probes every configured key. `402 Payment required` means
+that provider's account is out of credit — the app falls through to the next
+provider automatically, so one healthy provider is enough.
+
+**Models in use** (`lib/ai/providers.ts`): Groq `openai/gpt-oss-120b` for text,
+Groq `qwen/qwen3.8-27b` for vision, Cerebras `gpt-oss-120b` when that account has
+credit. Providers rename and retire ids regularly; when the Director starts
+answering with an error, run the check above first.
+
+The Director has 50 free chats/day/user (configurable), streams tokens, remembers
+threads locally, and compiles prompts with the full catalog exposed as context.
 
 ---
 

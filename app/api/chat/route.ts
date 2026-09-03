@@ -105,7 +105,20 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (e) {
-    return NextResponse.json({ error: "PROVIDER_DOWN", detail: e instanceof Error ? e.message : "unknown" }, { status: 502 });
+    const detail = e instanceof Error ? e.message : "unknown";
+    // Separate "account out of credit / misconfigured" from a transient outage so
+    // the UI can tell the visitor which one it is.
+    const exhausted = /\b(401|402|403)\b|payment|quota|insufficient|unauthorized/i.test(detail);
+    return NextResponse.json(
+      {
+        error: "PROVIDER_DOWN",
+        message: exhausted
+          ? "The Director's model credit is used up. Add a fresh provider key and it's back."
+          : "The Director couldn't reach a model just now. Try again in a moment.",
+        detail,
+      },
+      { status: 502 }
+    );
   }
 }
 

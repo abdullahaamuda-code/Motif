@@ -66,6 +66,7 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [thinking, setThinking] = useState(false);
+  const [reasoning, setReasoning] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [showThreads, setShowThreads] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
@@ -162,6 +163,7 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
     saveThread(thread);
     setInput("");
     setThinking(true);
+    setReasoning(false);
 
     abortRef.current = new AbortController();
     const assistantIdx = nextMessages.length - 1;
@@ -177,7 +179,11 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
       if (rem) setRemaining(Number(rem));
       if (!res.ok || !res.body) {
         const j = await res.json().catch(() => ({}));
-        throw new Error(j.error === "QUOTA" ? "Daily free quota is done — come back tomorrow." : j.message ?? "The Director stepped away for a moment. Try again.");
+        throw new Error(
+          j.error === "QUOTA"
+            ? "Daily free quota is done — come back tomorrow."
+            : j.message ?? "The Director stepped away for a moment. Try again."
+        );
       }
       setThinking(false); setStreaming(true);
 
@@ -194,7 +200,7 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
           if (updated) setActive(updated);
           return nextT;
         });
-      });
+      }, () => setReasoning(true));
 
       sfx.receive();
       // persist final snapshot of this thread (with all streamed text)
@@ -205,7 +211,7 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
       });
     } catch (e) {
       if ((e as Error).name === "AbortError") {
-        setThinking(false); setStreaming(false);
+        setThinking(false); setStreaming(false); setReasoning(false);
         return;
       }
       const updated: Thread = {
@@ -218,7 +224,7 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
       setActive(updated);
       saveThread(updated);
     } finally {
-      setThinking(false); setStreaming(false);
+      setThinking(false); setStreaming(false); setReasoning(false);
     }
   }, [input, streaming, thinking, active, pinnedSlug]);
 
@@ -255,7 +261,13 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
           <div className="flex-1 min-w-0">
             <div className="font-display font-semibold text-sm leading-tight">The Director</div>
             <div className="text-[10px] font-mono uppercase tracking-[0.12em] text-paper-faint truncate">
-              {thinking ? "crafting your direction" : streaming ? "writing" : active?.messages.length ? `${active.messages.length} messages` : remaining !== null ? `${remaining} briefs left today` : "ready"}
+              {thinking
+                ? "crafting your direction"
+                : streaming
+                  ? (last?.content ? "writing" : "thinking it through")
+                  : active?.messages.length
+                    ? `${active.messages.length} messages`
+                    : remaining !== null ? `${remaining} briefs left today` : "ready"}
             </div>
           </div>
           <div className="flex items-center gap-0.5">
@@ -298,7 +310,7 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
 
           {/* message column */}
           <div className="flex-1 flex flex-col min-w-0 min-h-0">
-            <div ref={boxRef} className="flex-1 overflow-y-auto slim-scroll p-4 space-y-4">
+            <div ref={boxRef} className="flex-1 overflow-y-auto overflow-x-hidden slim-scroll p-4 space-y-4 min-w-0">
               {(!active || active.messages.length === 0) && (
                 <div className="h-full flex flex-col justify-center text-center px-3">
                   <div className="font-display text-2xl font-medium text-paper">Hey. Director here.</div>
@@ -318,17 +330,24 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
               )}
 
               {active?.messages.map((m, i) => (
-                <div key={i} className={`msg-in ${m.role === "user" ? "ml-auto max-w-[88%]" : "max-w-full"}`}>
-                  <div className={`rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
+                <div key={i} className={`msg-in min-w-0 ${m.role === "user" ? "ml-auto max-w-[88%]" : "max-w-full"}`}>
+                  <div className={`rounded-2xl px-4 py-3 text-[13px] leading-relaxed min-w-0 ${
                     m.role === "user"
                       ? "bg-paper text-ink rounded-br-md font-medium whitespace-pre-wrap"
                       : "text-paper-dim"
                   }`}>
                     {m.content
                       ? m.role === "assistant"
-                        ? <RichText text={streaming && i === active.messages.length - 1 ? m.content : stripQuestions(m.content)} />
+                        ? (() => {
+                            const isLive = streaming && i === active.messages.length - 1;
+                            return <RichText text={isLive ? m.content : stripQuestions(m.content)} streaming={isLive} />;
+                          })()
                         : m.content
-                      : thinking && i === active.messages.length - 1 ? <ThinkingDots /> : <span className="caret-css" />}
+                      : i === active.messages.length - 1
+                        // Empty assistant bubble means the model is still on its
+                        // reasoning channel — keep the honest label, never a bare caret.
+                        ? <ThinkingDots label={reasoning ? "thinking it through" : "crafting"} />
+                        : <span className="caret-css" />}
                   </div>
                 </div>
               ))}
@@ -414,10 +433,10 @@ export default function Director({ pinnedSlug, onClose }: { pinnedSlug?: string 
   );
 }
 
-function ThinkingDots() {
+function ThinkingDots({ label = "crafting" }: { label?: string }) {
   return (
     <span className="think-dots inline-flex gap-1 items-center text-paper-faint text-[13px]">
-      crafting <span>.</span><span>.</span><span>.</span>
+      {label} <span>.</span><span>.</span><span>.</span>
     </span>
   );
 }
