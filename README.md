@@ -8,7 +8,7 @@ favorite AI coding tool needs (vibe brief, raw spec, or AGENTS.md).
 
 ---
 
-## 🚀 The Idea
+## The Idea
 
 There are thousands of premium design pages on the internet. Almost all of them
 show you a PNG, sell you a download, and leave you alone when you sit down to build.
@@ -25,7 +25,7 @@ dark inspection table, remixable in real time, and compilable into a paste-ready
 - **MIT licensed** — fork, modify, self-host, and add designs by appending one
   object. No DB. Static. Boring on purpose = reliable.
 
-## 🎨 The design system
+## The design system
 
 The chrome is a printer's press room: warm ink-black ground, paper-cream text,
 hairline rules, and a single proofing-red accent. Registration marks and crop
@@ -231,6 +231,12 @@ system** — everything (chat history, preferences) is localStorage.
 - Prompt-injection sanitizer at the boundary.
 
 ---
+
+## Why
+
+Design galleries show pictures; builders need prompts. Motif renders the design as a
+live proof sheet *and* compiles the exact brief your AI tool needs — the gallery and
+the kickoff are the same artifact.
 
 ## License
 
