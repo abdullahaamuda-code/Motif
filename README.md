@@ -245,3 +245,6 @@ the kickoff are the same artifact.
 ---
 
 Motif — free forever. Proofed live, never screenshotted.
+---
+
+Built by Abdullah A-Amuda.
